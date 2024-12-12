@@ -186,3 +186,163 @@ QHash<int, ZeroClient*> mClients;  // 用ID来索引相应的客户
 
 总之，QT的信号机制就是要一直溯源回去查看，这存在于类包含类的情况
 
+
+
+
+
+
+
+## 第三节：受控程序的网络搭建：
+
+还是像上一节服务端一样，建一个TcpSocket类和ZeroClient类
+
+TcpSocket的接口主要有：连接，断开，发送，接受这几个功能 
+
+
+
+ZeroClient类 
+
+不断死循环，接收从服务端传过来的命令，比如：屏幕监控，键盘监控等等 
+
+
+
+
+
+和原版的代码相比，我自己优化了对于系统的判断，毕竟微软官方文档说了`GetVersionExA`已经废弃
+
+改成了这样：
+
+```c++
+std::string ZeroClient::getSystemModel()
+{
+    std::string version = "Unknown";
+
+    // 获取 RtlGetVersion 函数指针
+    HMODULE hNtdll = GetModuleHandle(L"ntdll.dll");
+    RtlGetVersionPtr RtlGetVersion = (RtlGetVersionPtr)GetProcAddress(hNtdll, "RtlGetVersion");
+
+    if (RtlGetVersion) {
+        // 获取操作系统版本信息
+        RTL_OSVERSIONINFOEXW osvi;
+        ZeroMemory(&osvi, sizeof(osvi));
+        osvi.dwOSVersionInfoSize = sizeof(osvi);
+
+        NTSTATUS status = RtlGetVersion(&osvi);
+        if (status == 0) { // 状态成功
+            // 检查 Windows 11
+            if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber >= 22000) {
+                version = "Windows11OrGreater";
+   
+            }
+            // 检查 Windows 10
+            else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0) {
+                version = "Windows10OrGreater";
+                
+            }
+            // 检查 Windows 8.1
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) {
+                version = "Windows8Point1OrGreater";
+               
+            }
+            // 检查 Windows 8
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2) {
+                version = "Windows8OrGreater";
+              
+            }
+            // 检查 Windows 7
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1) {
+                version = "Windows7OrGreater";
+               
+            }
+            // 检查 Windows Vista
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0) {
+                version = "VistaOrGreater";
+               
+            }
+            // 检查 Windows XP
+            else if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1) {
+                version = "XPOrGreater";
+                
+            }
+        }
+    }
+
+    return version;
+
+}
+```
+
+
+
+另外，如果受控主机是GBK编码，用户名可能会出错，所以要进行一个GBK转UTF-8的转换
+
+```C++
+std::string ZeroClient::getSystemModel()
+{
+    std::string version = "Unknown";
+
+    // 获取 RtlGetVersion 函数指针
+    HMODULE hNtdll = GetModuleHandle(L"ntdll.dll");
+    RtlGetVersionPtr RtlGetVersion = (RtlGetVersionPtr)GetProcAddress(hNtdll, "RtlGetVersion");
+
+    if (RtlGetVersion) {
+        // 获取操作系统版本信息
+        RTL_OSVERSIONINFOEXW osvi;
+        ZeroMemory(&osvi, sizeof(osvi));
+        osvi.dwOSVersionInfoSize = sizeof(osvi);
+
+        NTSTATUS status = RtlGetVersion(&osvi);
+        if (status == 0) { // 状态成功
+            // 检查 Windows 11
+            if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber >= 22000) {
+                version = "Windows11OrGreater";
+   
+            }
+            // 检查 Windows 10
+            else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0) {
+                version = "Windows10OrGreater";
+                
+            }
+            // 检查 Windows 8.1
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) {
+                version = "Windows8Point1OrGreater";
+               
+            }
+            // 检查 Windows 8
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2) {
+                version = "Windows8OrGreater";
+              
+            }
+            // 检查 Windows 7
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1) {
+                version = "Windows7OrGreater";
+               
+            }
+            // 检查 Windows Vista
+            else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0) {
+                version = "VistaOrGreater";
+               
+            }
+            // 检查 Windows XP
+            else if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1) {
+                version = "XPOrGreater";
+                
+            }
+        }
+    }
+
+    return version;
+
+}
+```
+
+
+
+效果展示：
+
+![1733969372452](README/1733969372452.png)
+
+
+
+
+
