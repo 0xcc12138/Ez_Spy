@@ -1,0 +1,5 @@
+﻿  ZeroClient.cpp
+F:\viusal studio document\Qt_Process\远控开发\第三节_客户端网络搭建\Victim\ZeroClient.cpp(142,54): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+F:\viusal studio document\Qt_Process\远控开发\第三节_客户端网络搭建\Victim\ZeroClient.cpp(152,41): warning C4267: “=”: 从“size_t”转换到“int”，可能丢失数据
+F:\viusal studio document\Qt_Process\远控开发\第三节_客户端网络搭建\Victim\ZeroClient.cpp(157,45): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+  Victim.vcxproj -> F:\viusal studio document\Qt_Process\远控开发\第三节_客户端网络搭建\Victim\x64\Debug\Victim.exe

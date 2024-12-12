@@ -1,0 +1,5 @@
+﻿  main.cpp
+main.obj : error LNK2019: 无法解析的外部符号 __imp__WSAStartup@8，函数 _WinMain@16 中引用了该符号
+main.obj : error LNK2019: 无法解析的外部符号 __imp__WSACleanup@0，函数 _WinMain@16 中引用了该符号
+MSVCRTD.lib(exe_main.obj) : error LNK2019: 无法解析的外部符号 _main，函数 "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 中引用了该符号
+F:\viusal studio document\Qt_Process\远控开发\第三节_客户端网络搭建\Victim\Debug\Victim.exe : fatal error LNK1120: 3 个无法解析的外部命令
