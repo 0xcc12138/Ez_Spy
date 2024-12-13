@@ -346,3 +346,58 @@ std::string ZeroClient::getSystemModel()
 
 
 
+## 第四节：服务端对客户端的基本控制
+
+这一节主要实现了弹窗，重启，下线的操作
+
+具体博客有的东西不说了，主要讲讲`lambda`表达式
+
+我发现`lambda`表达式在qt这种信号`connect`的方式非常好用
+
+
+
+例如发送信号的时候，要传递参数，但是有一些信号，例如 `QPushButton::clicked` 信号的参数是**固定的**，但是又想要传进去参数，就可以用`lambda`表达式
+
+
+
+例如这个信号 `QTableWidget::customContextMenuRequested`，对应的函数参数只能是`const QPoint& pos`
+
+但是我又想使用一个非全局变量变量，就可以这样写
+
+```c++
+connect(ui.tableWidget, &QTableWidget::customContextMenuRequested,this, [this,contextMenu](const QPoint& pos) {
+     showContextMenu(pos, contextMenu);  //传递QPoint和捕获的contextMenu
+});
+```
+
+然后`showContextMenu`是我们的逻辑，但是`lambda`表达式的参数是符合这个信号的参数要求的
+
+
+
+
+
+另外就是今天配置了一下visual studio的ollvm代码混淆，我是参考这篇文章的 [构建含有ollvm功能的LLVM(clang-cl)供Microsoft Visual Studio 2022使用 - 哔哩哔哩](https://www.bilibili.com/opus/943544163969794072) 
+
+
+
+VS项目属性要这样设置
+
+![1734016495313](README/1734016495313.png)
+
+
+
+![1734016528967](README/1734016528967.png)
+
+
+
+![1734016548034](README/1734016548034.png)
+
+
+
+总之自己的项目实测的话，没有加ollvm混淆，微信传文件会被杀，但是如果加了ollvm混淆，可以成功让被控主机弹窗，重启，当然前提是人家双击运行.....
+
+![1734016927935](README/1734016927935.png)
+
+
+
+![1734016974920](README/1734016974920.png)
